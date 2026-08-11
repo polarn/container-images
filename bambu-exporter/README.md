@@ -16,7 +16,7 @@ consumers can read as often as they like at no cost to the printer.
 
 | Port | Path | For |
 |------|------|-----|
-| 9090 | `/metrics` | Prometheus text, ~43 `bambulab_*` gauges. Cluster-internal. |
+| 9090 | `/metrics` | Prometheus text, ~57 `bambulab_*` families (gauges plus two `_total` counters). Cluster-internal. |
 | 8080 | `/state` | The merged report as JSON, for the waybar pill. On the LAN ingress. |
 | 8080 | `/healthz` | Process liveness. Deliberately not tied to report freshness — a powered-off printer is not an unhealthy exporter. |
 
