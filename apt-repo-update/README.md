@@ -6,7 +6,8 @@ Tooling image for the `apt-repo-update` CronJob in
 `env-exec` apt repository every 5 minutes.
 
 - **Image:** `ghcr.io/polarn/apt-repo-update`, pinned by digest in flux
-- **Base:** `debian:trixie-slim` — the estate is Debian 13; ~150 MB built
+- **Base:** `debian:trixie-slim` — the estate is Debian 13; ~82 MB built
+- **Contents:** `apt-utils`, for `apt-ftparchive`
 - **Update script:** stays in the CronJob's ConfigMap, *not* baked in, so it can
   be changed without rebuilding this image
 
@@ -21,12 +22,18 @@ radius — on 2026-08-18 a replayed CronJob backlog ran ~30 of these at once and
 drove a 2-core node into swap thrash until kubelet stopped posting node status.
 Baked in, the same herd is nearly harmless. Runs went 56s to 7s.
 
-## Possible slimming
+## apt-ftparchive, not dpkg-scanpackages
 
-69 MB of the image is perl (`dpkg-scanpackages` is a Perl script) plus binutils,
-which `dpkg-dev` depends on and the job never calls. `apt-ftparchive`
-(`apt-utils`, no perl) generates `Packages`, `Packages.gz` and a `Release` with
-all three checksum sets natively, replacing both `dpkg-scanpackages` and the
-hand-rolled checksum loops in the ConfigMap script.
+`apt-ftparchive` emits `Packages`, `Packages.gz` and a `Release` carrying every
+checksum set natively, so it replaced both `dpkg-scanpackages` and ~20 lines of
+hand-rolled md5/sha1/sha256 loops in the ConfigMap script. It also needs neither
+perl nor binutils, which is the difference between 82 MB and 149 MB.
 
-Left as a separate change: it alters index generation, not packaging.
+Two deliberate changes to the published index, both verified against a real apt
+client:
+
+- **Every version is listed, not just the newest.** `dpkg-scanpackages` without
+  `--multiversion` wrote one entry per package and warned about the rest, so
+  older `env-exec` releases could not be installed. The install candidate is
+  unchanged; the older versions are simply reachable now.
+- **A SHA512 section is added.** apt uses the strongest digest on offer.
