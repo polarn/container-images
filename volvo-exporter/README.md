@@ -29,6 +29,7 @@ so two pods never overlap.
 | `VOLVO_CONFIG_JSON` | — | Contents of `~/.config/volvo/config.json`. `vin` and `redirect_uri` are required. |
 | `VOLVO_DATA_DIR` | `/data` | Holds `tokens.json` and its lock. Must be writable by 65532. |
 | `VOLVO_INTERVAL` | `5m` | At least `1m`. Each poll is 10 API calls against a 10,000/day app quota. |
+| `VOLVO_FAST_INTERVAL` | `1m` | Re-reads doors, windows and engine (3 calls) this often between polls while the car has reported in the last 10 min. `0` turns it off; otherwise at least `30s` and below `VOLVO_INTERVAL`. |
 | `VOLVO_METRICS_ADDR` | `:9090` | |
 | `VOLVO_HTTP_ADDR` | `:8080` | |
 

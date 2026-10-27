@@ -3,7 +3,7 @@
 FROM docker.io/library/golang:1.25-bookworm@sha256:ea341baa9bd5ba6784f6d7161ace70544349a6242d54d34a0fbfd2c4d51c9d58 AS build
 
 ARG SRC_REPO=https://github.com/polarn/waybar-modules
-ARG SRC_REF=d55cb852b4757e187af5ca9b58bd18eab2c7bdef
+ARG SRC_REF=14542392686c504e7f90f7fd6c87eb9ad457b7dd
 
 WORKDIR /src
 RUN git clone "${SRC_REPO}" . \
