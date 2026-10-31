@@ -10,8 +10,7 @@ image (or all) on demand. Images are referenced from the
 
 | Image | Source | Notes |
 |-------|--------|-------|
-| [`volvo-exporter`](./volvo-exporter) | [polarn/waybar-modules](https://github.com/polarn/waybar-modules) | Volvo car telemetry on `scratch` (+CA bundle). Sole holder of the rotating refresh token, on a PVC; serves Prometheus metrics plus a JSON state endpoint for the waybar pill. |
-| [`tradfri-ctl`](./tradfri-ctl) | [polarn/waybar-modules](https://github.com/polarn/waybar-modules) | DIRIGERA hub CLI on `scratch`; used by the flux `tradfri` CronJob to rotate which Sonos favorite the SOMRIG button plays. |
+| [`tradfri-ctl`](./tradfri-ctl) | [polarn/waybar-modules](https://github.com/polarn/waybar-modules) | DIRIGERA hub CLI on `scratch`; used by the flux `tradfri` CronJob to rotate which Sonos favorite the SOMRIG button plays. Still built here rather than in waybar-modules: it changes about once a year and that repo has no image workflow. |
 | [`opnsense-mcp-bundle`](./opnsense-mcp-bundle) | [opnsense-mcp-server](https://www.npmjs.com/package/opnsense-mcp-server) (Pixelworlds) | initContainer that delivers node + the OPNsense MCP server into a shared volume, so Bifrost runs it **in-process over stdio** (no HTTP bridge). |
 | [`opnsense-mcp`](./opnsense-mcp) | [vespo92/OPNSenseMCP](https://github.com/vespo92/OPNSenseMCP) | **Superseded** by `opnsense-mcp-bundle` — vespo92's streamable-HTTP + SSE are both broken against MCP SDK 1.24.x. Kept for reference; prune later. |
 
