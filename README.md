@@ -10,7 +10,6 @@ image (or all) on demand. Images are referenced from the
 
 | Image | Source | Notes |
 |-------|--------|-------|
-| [`bambu-exporter`](./bambu-exporter) | [polarn/waybar-modules](https://github.com/polarn/waybar-modules) | Bambu Lab printer telemetry on `scratch` (+CA bundle). Holds one cloud MQTT subscription open and serves Prometheus metrics plus a JSON state endpoint for the waybar pill. |
 | [`volvo-exporter`](./volvo-exporter) | [polarn/waybar-modules](https://github.com/polarn/waybar-modules) | Volvo car telemetry on `scratch` (+CA bundle). Sole holder of the rotating refresh token, on a PVC; serves Prometheus metrics plus a JSON state endpoint for the waybar pill. |
 | [`tradfri-ctl`](./tradfri-ctl) | [polarn/waybar-modules](https://github.com/polarn/waybar-modules) | DIRIGERA hub CLI on `scratch`; used by the flux `tradfri` CronJob to rotate which Sonos favorite the SOMRIG button plays. |
 | [`opnsense-mcp-bundle`](./opnsense-mcp-bundle) | [opnsense-mcp-server](https://www.npmjs.com/package/opnsense-mcp-server) (Pixelworlds) | initContainer that delivers node + the OPNsense MCP server into a shared volume, so Bifrost runs it **in-process over stdio** (no HTTP bridge). |

@@ -4,14 +4,12 @@ Work queued for this repo. Each item says what done looks like. Remove an item o
 
 ## 1. Rework how images of our own code are built
 
-`bambu-exporter`, `volvo-exporter` and `tradfri-ctl` are built from polarn/waybar-modules, so every release takes three commits in three repos: the source change, a `SRC_REF` bump here, and a digest pin in polarn/flux. The pattern came from the third-party images, whose upstreams can't hold our Dockerfiles; nothing records a reason to keep our own code on it.
+Decided 2026-10-31: an image of our own code is built in the repo that holds the code, by a workflow on push to `main` with `paths:` filters (GitHub evaluates those over the whole push, so the `HEAD^..HEAD` problem below does not apply there), tagged by commit SHA under the old `ghcr.io/polarn/<name>` so flux can roll back to a digest built here. Flux still gets the digest by a manual pin, read from the run summary. `bambu-exporter` is done: `polarn/bambu` holds its Dockerfile and `build.yml`, flux runs that image, and the folder here is gone. The ghcr package needed a one-off *Manage Actions access* grant for the new repo.
 
-Decide, then do:
+Left:
 
-- **Where the build runs.** Either a workflow in waybar-modules that builds each image on a push to `main` touching its `cmd/<name>/`, `pkg/` or `go.mod`, tagged by commit SHA, or keep this repo but trigger it from waybar-modules instead of hand-bumping `SRC_REF`.
-- **How the image is made.** The three Dockerfiles are the same static Go build on `scratch` with a CA bundle; `ko`, or one parameterised Dockerfile, would replace them.
-- **How flux gets the digest.** The convention is a manual pin. Flux image automation (`ImageRepository`, `ImagePolicy`, `ImageUpdateAutomation`) or Renovate could open or push the bump instead; decide whether a reviewed pin still matters for these three.
-- Whatever builds them must diff the whole push (`github.event.before`), not `HEAD^..HEAD` as `build.yml`'s `detect` does now: a push of two commits builds only the images the last one touched.
-- Keep the old `ghcr.io/polarn/<name>` image names and their existing tags, so flux can roll back to a digest built here.
+- `volvo-exporter`: the same Dockerfile and workflow in `polarn/volvo`, a flux repin, then delete the folder here. The package already grants `polarn/volvo` write access.
+- `tradfri-ctl` stays here for now: it is a CLI in polarn/waybar-modules, which has no image workflow, and it changes about once a year, so a `SRC_REF` bump is cheaper than a workflow there. Say so in the README when the volvo item lands.
+- `build.yml`'s `detect` still diffs `HEAD^..HEAD`, so a push of two commits builds only the images the last one touched. Diff from `github.event.before` instead.
 
-Done: a waybar-modules change to one of the three reaches the cluster with at most one manual step, this repo holds only third-party-source images (or the README says why it still holds ours), and the READMEs here, in waybar-modules and in the flux apps describe the new release path.
+Done: this repo holds only third-party-source images plus `tradfri-ctl` with the README saying why, and the READMEs here and in the flux apps describe the new release path.
